@@ -1,0 +1,85 @@
+mysql> create table customers
+    -> (customer_number int(11) primary key,
+    -> fullName varchar(40) not null,
+    -> address varchar(50) not null,
+    -> email varchar(99),
+    -> phone varchar(20) not null
+    -> );
+Query OK, 0 rows affected, 1 warning (0.04 sec)
+
+mysql> create table accounts
+    -> (account_number int(11) primary auto_increment,
+    -> account_type varchar(30) not null,
+    -> date_create_account date not null,
+    -> balance int(50) not null,
+    -> customer_number int,
+    -> foreign key(customer_number) references customers(customer_number)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'auto_increment,
+account_type varchar(30) not null,
+date_create_account date not ' at line 2
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank_acount        |
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| practice_mysql     |
+| quan_ly_dao        |
+| quan_ly_sinh_vien  |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+11 rows in set (0.00 sec)
+
+mysql> use bank_acount;
+Database changed
+mysql> create table accounts(
+    -> account_number int(11) primary key auto_increment,
+    -> account_type varchar(30) not null,
+    -> date_create_account date not null,
+    -> balance int(50) not null,
+    -> customer_number int,
+    -> foreign key(customer_number) references customers(customer_number)
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> show tables;
++-----------------------+
+| Tables_in_bank_acount |
++-----------------------+
+| accounts              |
+| customers             |
++-----------------------+
+2 rows in set (0.00 sec)
+
+mysql> use bank_acount;
+Database changed
+mysql> create table transactions(
+    -> tran_number int(11) primary key auto_increment,
+    -> account_number int,
+    -> date_tran date not null,
+    -> amounts int(30) not null,
+    -> account_number_tran int not null,
+    -> foreign key(account_number) references accounts(account_number)
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> sout
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'sout' at line 1
+mysql> show tables;
++-----------------------+
+| Tables_in_bank_acount |
++-----------------------+
+| accounts              |
+| customers             |
+| transactions          |
++-----------------------+
+3 rows in set (0.00 sec)
+
+mysql>
