@@ -1,0 +1,154 @@
+C:\Users\admin>mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 31
+Server version: 8.0.20 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database practice_Mysql;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use practice_Mysql;
+Database changed
+mysql> create table table_name
+    -> (contact_id varchar(255) not null auto_increment,
+    -> last_name varchar(30) not null,
+    -> first_name varchar(20),
+    -> birthday date,
+    -> constraint contacts_pk primary key(contact_id)
+    -> );
+ERROR 1063 (42000): Incorrect column specifier for column 'contact_id'
+mysql> create table table_name
+    -> (contact_id int(15) not null auto_increment,
+    -> last_name varchar(30) not null,
+    -> first_name varchar(20),
+    -> birthday date,
+    -> constraint contacts_pk primary key(contact_id)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.06 sec)
+
+mysql> show tables;
++--------------------------+
+| Tables_in_practice_mysql |
++--------------------------+
+| table_name               |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql> use practice_Mysql;
+Database changed
+mysql> create table suppliers
+    -> (suppliers_id int(11) not null auto_increment,
+    -> suppliers_name varchar(50) not null,
+    -> account_rep varchar(30) not null default'TDB',
+    -> constraint suppliers_pk primary key(suppliers_id)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.04 sec)
+
+mysql> show tables;
++--------------------------+
+| Tables_in_practice_mysql |
++--------------------------+
+| suppliers                |
+| table_name               |
++--------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select *from suppliers;
+Empty set (0.00 sec)
+
+mysql> drop table table_name;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++--------------------------+
+| Tables_in_practice_mysql |
++--------------------------+
+| suppliers                |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql> insert into suppliers
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> insert into suppliers
+    -> (suppliers_id,supliers_name,account_rep) value (1,'Test1','myster1309')
+    -> ;
+ERROR 1054 (42S22): Unknown column 'supliers_name' in 'field list'
+mysql> use pratice_mysql;
+ERROR 1049 (42000): Unknown database 'pratice_mysql'
+mysql> use practice_mysql;
+Database changed
+mysql> insert into suppliers(suppliers_id,suppliers_name,account_rep) value (1001,'Test','mystery');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show tables
+    -> ;
++--------------------------+
+| Tables_in_practice_mysql |
++--------------------------+
+| suppliers                |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from suppliers;
++--------------+----------------+-------------+
+| suppliers_id | suppliers_name | account_rep |
++--------------+----------------+-------------+
+|         1001 | Test           | mystery     |
++--------------+----------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> alter table suppliers
+    -> rename column suppliers_id to my_id;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from suppliers;
++-------+----------------+-------------+
+| my_id | suppliers_name | account_rep |
++-------+----------------+-------------+
+|  1001 | Test           | mystery     |
++-------+----------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> alter table suppliers
+    -> rename to my_table;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++--------------------------+
+| Tables_in_practice_mysql |
++--------------------------+
+| my_table                 |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| practice_mysql     |
+| quan_ly_dao        |
+| quan_ly_sinh_vien  |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+10 rows in set (0.00 sec)
+
+mysql> alter database practice_mysql
+    -> rename to test_rename;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'rename to test_rename' at line 2
+mysql>
