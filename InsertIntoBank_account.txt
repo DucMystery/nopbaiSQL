@@ -1,0 +1,133 @@
+Microsoft Windows [Version 10.0.18362.836]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 21
+Server version: 8.0.20 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank_acount        |
+| classicmodels      |
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| practice_mysql     |
+| quan_ly_dao        |
+| quan_ly_sinh_vien  |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> use bank_acount;
+Database changed
+mysql> show tables;
++-----------------------+
+| Tables_in_bank_acount |
++-----------------------+
+| accounts              |
+| customers             |
+| transactions          |
++-----------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from accounts;
+Empty set (0.02 sec)
+
+mysql> insert into accounts(
+    -> account_number,account_type,date_create_account,balance,customer_number)
+    -> values (1001,'VIP','2020-5-22',10000000,1);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`bank_acount`.`accounts`, CONSTRAINT `accounts_ibfk_1` FOREIGN KEY (`customer_number`) REFERENCES `customers` (`customer_number`))
+mysql> insert into customers(
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> describe customers;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| customer_number | int         | NO   | PRI | NULL    |       |
+| fullName        | varchar(40) | NO   |     | NULL    |       |
+| address         | varchar(50) | NO   |     | NULL    |       |
+| email           | varchar(99) | YES  |     | NULL    |       |
+| phone           | varchar(20) | NO   |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> insert into customers(
+    -> customer_number,fullName,address,email,phone) values (1,'Duc','HT','abs@gmail.com','0972522048');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from customers;
++-----------------+----------+---------+---------------+------------+
+| customer_number | fullName | address | email         | phone      |
++-----------------+----------+---------+---------------+------------+
+|               1 | Duc      | HT      | abs@gmail.com | 0972522048 |
++-----------------+----------+---------+---------------+------------+
+1 row in set (0.00 sec)
+
+mysql> insert into accounts(
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> describe accounts;
++---------------------+-------------+------+-----+---------+----------------+
+| Field               | Type        | Null | Key | Default | Extra          |
++---------------------+-------------+------+-----+---------+----------------+
+| account_number      | int         | NO   | PRI | NULL    | auto_increment |
+| account_type        | varchar(30) | NO   |     | NULL    |                |
+| date_create_account | date        | NO   |     | NULL    |                |
+| balance             | int         | NO   |     | NULL    |                |
+| customer_number     | int         | YES  | MUL | NULL    |                |
++---------------------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into accounts(
+    -> account_type,date_create_account,balance,customer_number) values ('VIP','2020-5-22',100000000,1);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from accounts;
++----------------+--------------+---------------------+-----------+-----------------+
+| account_number | account_type | date_create_account | balance   | customer_number |
++----------------+--------------+---------------------+-----------+-----------------+
+|              1 | VIP          | 2020-05-22          | 100000000 |               1 |
++----------------+--------------+---------------------+-----------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> alter table accounts
+    -> ADD CONSTRAINT customer_number_fk UNIQUE(customer_number);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> describe accounts;
++---------------------+-------------+------+-----+---------+----------------+
+| Field               | Type        | Null | Key | Default | Extra          |
++---------------------+-------------+------+-----+---------+----------------+
+| account_number      | int         | NO   | PRI | NULL    | auto_increment |
+| account_type        | varchar(30) | NO   |     | NULL    |                |
+| date_create_account | date        | NO   |     | NULL    |                |
+| balance             | int         | NO   |     | NULL    |                |
+| customer_number     | int         | YES  | UNI | NULL    |                |
++---------------------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into accounts(
+    -> account_type,date_create_account,balance,customer_number) values ('VIP','2020-5-22',100000000,1);
+ERROR 1062 (23000): Duplicate entry '1' for key 'accounts.customer_number_fk'
+mysql> insert into accounts(
+    -> account_type,date_create_account,balance,customer_number) values ('VIP','2020-5-22',100000000,2);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`bank_acount`.`accounts`, CONSTRAINT `accounts_ibfk_1` FOREIGN KEY (`customer_number`) REFERENCES `customers` (`customer_number`))
+mysql>
