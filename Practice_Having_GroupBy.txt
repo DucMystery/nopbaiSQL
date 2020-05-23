@@ -1,0 +1,20 @@
+use classicmodelsproducts;
+select status from orders as o
+group by status;
+select status ,count(*) as 'So luong status'
+from orders as o
+group by status;
+select status , sum(quantityOrdered * priceEach) as mount
+from orders as o 
+join orderdetails as od on o.orderNumber =od.orderNumber
+group by status; 
+select orderNumber, sum(quantityOrdered*priceEach) as total
+from orderdetails as od
+group by orderNumber;
+select year(orderDate) as year, sum(quantityOrdered *priceEach) as total
+from orders as o
+join orderdetails as od
+on o.orderNumber = od.orderNumber
+where status ='shipped'
+group by year
+having year>2003;
