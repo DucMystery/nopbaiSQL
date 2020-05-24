@@ -1,0 +1,30 @@
+create database Library;
+use Library;
+create table Book(
+BookCode int(11) primary key auto_increment unique,
+BookName varchar(100) not null,
+PublishingCompany varchar(50) not null,
+author varchar(50) not null,
+publishingYear int(4) ,
+NumberOfEditions int(2),
+Price int (15) ,
+image varchar(50) ,
+Cate_number int(10) ,
+foreign key(Cate_number) references Category(Cate_number));
+create table Category(
+Cate_number int(10) primary key auto_increment unique,
+Cate_name varchar(50) not null unique); 
+
+create table Students (
+Student_number int(10) primary key unique auto_increment,
+Student_name varchar(50) not null unique,
+address varchar(50) ,
+email varchar(50) ,
+image varchar(100));
+create table Librarian(
+Student_number int(10) ,
+foreign key(Student_number) references Students(Student_number),
+BookCode int(11) ,
+foreign key(BookCode) references Book(BookCode),
+status varchar(15) primary key unique,
+borrowedDate date not null);
