@@ -1,0 +1,146 @@
+Microsoft Windows [Version 10.0.18362.836]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>mysql -u mystery1309 -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 38
+Server version: 8.0.20 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank_acount        |
+| classicmodels      |
+| information_schema |
+| library            |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| practice_mysql     |
+| quan_ly_dao        |
+| quan_ly_sinh_vien  |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+13 rows in set (0.00 sec)
+
+mysql> create database managerCourse;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use managerCourse;
+Database changed
+mysql> create table CourseAll(
+    -> ID int(10) primary key auto_increment unique,
+    -> TEN varchar(40) not null,
+    -> TUOI int(3) not null,
+    -> KHOA_HOC varchar(30) not null,
+    -> SO_TIEN int(20) not null,
+    -> check(TUOI>=15)
+    -> );
+Query OK, 0 rows affected, 3 warnings (0.05 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_managercourse |
++-------------------------+
+| courseall               |
++-------------------------+
+1 row in set (0.00 sec)
+
+mysql> decribes courseall;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'decribes courseall' at line 1
+mysql> describe courseall;
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| ID       | int         | NO   | PRI | NULL    | auto_increment |
+| TEN      | varchar(40) | NO   |     | NULL    |                |
+| TUOI     | int         | NO   |     | NULL    |                |
+| KHOA_HOC | varchar(30) | NO   |     | NULL    |                |
+| SO_TIEN  | int         | NO   |     | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into courseall(
+    -> ID,TEN,TUOI,KHOA_HOC,SO_TIEN)
+    -> values (1,'HOANG',21,'CNTT',400000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from courseall;
++----+-------+------+----------+---------+
+| ID | TEN   | TUOI | KHOA_HOC | SO_TIEN |
++----+-------+------+----------+---------+
+|  1 | HOANG |   21 | CNTT     |  400000 |
++----+-------+------+----------+---------+
+1 row in set (0.00 sec)
+
+mysql> insert into courseall(
+    -> TEN,TUOI,KHOA_HOC,SO_TIEN)
+    -> values ('VIET',19,'DTVT',320000),
+    -> ('THANH',18,'KTDN',400000),
+    -> ('NHAN',19,'CK',450000),
+    -> ('HUONG',20,'TCNH',500000),
+    -> ('HUONG',20,'TCNH',200000)
+    -> ;
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from courseall;
++----+-------+------+----------+---------+
+| ID | TEN   | TUOI | KHOA_HOC | SO_TIEN |
++----+-------+------+----------+---------+
+|  1 | HOANG |   21 | CNTT     |  400000 |
+|  2 | VIET  |   19 | DTVT     |  320000 |
+|  3 | THANH |   18 | KTDN     |  400000 |
+|  4 | NHAN  |   19 | CK       |  450000 |
+|  5 | HUONG |   20 | TCNH     |  500000 |
+|  6 | HUONG |   20 | TCNH     |  200000 |
++----+-------+------+----------+---------+
+6 rows in set (0.00 sec)
+
+mysql> select * from courseall
+    -> where name='HUONG';
+ERROR 1054 (42S22): Unknown column 'name' in 'where clause'
+mysql> select * from courseall
+    -> where TEN ='HUONG';
++----+-------+------+----------+---------+
+| ID | TEN   | TUOI | KHOA_HOC | SO_TIEN |
++----+-------+------+----------+---------+
+|  5 | HUONG |   20 | TCNH     |  500000 |
+|  6 | HUONG |   20 | TCNH     |  200000 |
++----+-------+------+----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select sum(SO_TIEN) from courseall;
++--------------+
+| sum(SO_TIEN) |
++--------------+
+|      2270000 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select distinct TEN from courseall;
++-------+
+| TEN   |
++-------+
+| HOANG |
+| VIET  |
+| THANH |
+| NHAN  |
+| HUONG |
++-------+
+5 rows in set (0.00 sec)
+
+mysql>
