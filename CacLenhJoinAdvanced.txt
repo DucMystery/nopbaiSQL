@@ -1,0 +1,50 @@
+select length(customerName)
+from customers
+where length(customerName)>17;
+
+select productVendor,count(productCode) from products
+group by productVendor
+having count(productCode)>7
+order by productVendor;
+
+
+create table my_test select* from customers;
+select country,avg(creditLimit) as tb from customers
+group by country;
+
+select * from payments p
+join customers c
+on p.customerNumber = c.customerNumber;
+
+select c.country, avg(payments.amount), min(payments.amount) mina,max(payments.amount) maxa from payments
+join customers c on payments.customerNumber = c.customerNumber
+group by c.country
+order by maxa desc;
+
+select c1.firstName,c1.lastName,c1.jobTitle,c2.firstName,c2.lastName,c2.jobTitle from employees c1
+join employees c2 on c2.employeeNumber  = c1.reportsTo;
+
+select * from employees e1
+where exists (select *from employees e2 where e2.reportsTo = e1.employeeNumber);
+
+select * from employees e where e.reportsTo =1076;
+select distinct reportsTo from employees;
+
+select sum(count_customer)/count(country)
+from
+(select country,count(*) as count_customer from customers
+group by country) kq1 ;
+
+select avg(kq1.count_customer)
+from
+(select country,count(*) as count_customer from customers
+group by country) kq1 ;
+
+
+select pl.productLine, c.country,sum(o.quantityOrdered) as count_pl from productlines pl
+join products p on pl.productLine = p.productLine
+join orderdetails o on p.productCode = o.productCode
+join orders o2 on o.orderNumber = o2.orderNumber
+join customers c  on o2.customerNumber =c.customerNumber
+group by pl.productLine,c.country
+order by count_pl;
