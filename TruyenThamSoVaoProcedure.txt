@@ -1,0 +1,82 @@
+Microsoft Windows [Version 10.0.18362.836]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>mysql -u mystery1309
+ERROR 1045 (28000): Access denied for user 'mystery1309'@'localhost' (using password: NO)
+
+C:\Users\admin>mysql -u mystery1309 -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 83
+Server version: 8.0.20 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use classicmodels;
+Database changed
+mysql> show tables;
++-------------------------+
+| Tables_in_classicmodels |
++-------------------------+
+| customer_view           |
+| customers               |
+| employees               |
+| my_test                 |
+| offices                 |
+| orderdetails            |
+| orders                  |
+| payments                |
+| productlines            |
+| products                |
++-------------------------+
+10 rows in set (0.00 sec)
+
+mysql> delimiter /
+mysql> create procedure getCusByID(in cusNum int(11))
+    -> begin
+    -> select * from customers
+    -> where customerNumber = cusNum;
+    -> end /
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> call getCusByID;
+    -> /
+ERROR 1318 (42000): Incorrect number of arguments for PROCEDURE classicmodels.getCusByID; expected 1, got 0
+mysql> call getCusByID(175);
+    -> /
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+| customerNumber | customerName    | contactLastName | contactFirstName | phone      | addressLine1        | addressLine2 | city        | state | postalCode | country | salesRepEmployeeNumber | creditLimit |
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+|            175 | Gift Depot Inc. | King            | Julie            | 2035552570 | 25593 South Bay Ln. | NULL         | Bridgewater | CT    | 97562      | USA     |                   1323 |    84300.00 |
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter /
+mysql> create procedure getCusCountByID(in value_input varchar(50),out total int(11))
+    -> begin
+    -> select count(customerNumber) into total from customers where city = value_input;
+    -> end /
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> call getCusCountByID('Lyon',@isPresent);
+    -> /
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select @isPresent;
+    -> /
++------------+
+| @isPresent |
++------------+
+|          1 |
++------------+
+1 row in set (0.00 sec)
+
+mysql>
