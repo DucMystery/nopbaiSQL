@@ -1,0 +1,80 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank_acount        |
+| classicmodels      |
+| information_schema |
+| library            |
+| managercourse      |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| practice_mysql     |
+| quan_ly_dao        |
+| quan_ly_sinh_vien  |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+14 rows in set (0.00 sec)
+
+mysql> use classicmodels;
+Database changed
+mysql> show tables;
++-------------------------+
+| Tables_in_classicmodels |
++-------------------------+
+| customer_view           |
+| customers               |
+| employees               |
+| my_test                 |
+| offices                 |
+| orderdetails            |
+| orders                  |
+| payments                |
+| productlines            |
+| products                |
++-------------------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from customers
+    -> where customerNumber =175;
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+| customerNumber | customerName    | contactLastName | contactFirstName | phone      | addressLine1        | addressLine2 | city        | state | postalCode | country | salesRepEmployeeNumber | creditLimit |
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+|            175 | Gift Depot Inc. | King            | Julie            | 2035552570 | 25593 South Bay Ln. | NULL         | Bridgewater | CT    | 97562      | USA     |                   1323 |    84300.00 |
++----------------+-----------------+-----------------+------------------+------------+---------------------+--------------+-------------+-------+------------+---------+------------------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> explain select * from customers where customerNumber =175;
++----+-------------+-----------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+| id | select_type | table     | partitions | type  | possible_keys | key     | key_len | ref   | rows | filtered | Extra |
++----+-------------+-----------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | customers | NULL       | const | PRIMARY       | PRIMARY | 4       | const |    1 |   100.00 | NULL  |
++----+-------------+-----------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> alter table customers
+    -> add index idx_full_name(contactFirstName,contactLastName);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> explain select * from customers
+    -> where contactFirstName ='Jean'
+    -> or contactLastName ='King';
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+| id | select_type | table     | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | customers | NULL       | ALL  | idx_full_name | NULL | NULL    | NULL |  122 |    10.86 | Using where |
++----+-------------+-----------+------------+------+---------------+------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> alter index idx_full_name;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'index idx_full_name' at line 1
+mysql> alter table customers
+    -> drop index idx_full_name;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql>
