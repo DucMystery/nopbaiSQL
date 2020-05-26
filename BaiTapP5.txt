@@ -1,0 +1,278 @@
+Microsoft Windows [Version 10.0.18362.836]
+(c) 2019 Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>mysql -u mystery1309 -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 85
+Server version: 8.0.20 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database Demo;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Demo;
+Database changed
+mysql> create table products(
+    -> id int primary key auto_increment,
+    -> productCode int(8),
+    -> productName varchar(50),
+    -> productPrice int(20),
+    -> productAmount int(11),
+    -> productDescription varchar(255),
+    -> productStatus varchar(50)
+    -> );
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
+
+mysql> describe products;
++--------------------+--------------+------+-----+---------+----------------+
+| Field              | Type         | Null | Key | Default | Extra          |
++--------------------+--------------+------+-----+---------+----------------+
+| id                 | int          | NO   | PRI | NULL    | auto_increment |
+| productCode        | int          | YES  |     | NULL    |                |
+| productName        | varchar(50)  | YES  |     | NULL    |                |
+| productPrice       | int          | YES  |     | NULL    |                |
+| productAmount      | int          | YES  |     | NULL    |                |
+| productDescription | varchar(255) | YES  |     | NULL    |                |
+| productStatus      | varchar(50)  | YES  |     | NULL    |                |
++--------------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.01 sec)
+
+mysql> insert into products(id,productCode,productName,productPrice,productAmount,productDescription,productStatus)
+    -> values (1,1001,'TV',10000000,300000,'Tra gop','Da Ban'),
+    -> (2,1002,'Tu Lanh',50000000,20000000,'Tra gop','Da thanh toan xong')
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 4
+mysql> insert into products(id,productCode,productName,productPrice,productAmount,productDescription,productStatus)
+    -> values (1,1001,'TV',10000000,300000,'Tra gop','Da Ban')
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 3
+mysql> insert into products(id,productCode,productName,productPrice,productAmount,productDescription,productStatus)
+    -> values (1,1001,'TV',10000000,300000,'Tra gop','Da Ban')
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into products(productCode,productName,productPrice,productAmount,productDescription,productStatus)
+    -> values (1002,'Tu Lanh',5000000,3000000,'Tra gop','Da Thanh toan xong'),
+    -> (1003,'May Giat',10000000,10000000,'Thanh toan het','Da giao hang thanh cong')
+    -> ;
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from products;
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+| id | productCode | productName | productPrice | productAmount | productDescription | productStatus           |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+|  1 |        1001 | TV          |     10000000 |        300000 | Tra gop            | Da Ban                  |
+|  2 |        1002 | Tu Lanh     |      5000000 |       3000000 | Tra gop            | Da Thanh toan xong      |
+|  3 |        1003 | May Giat    |     10000000 |      10000000 | Thanh toan het     | Da giao hang thanh cong |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> create unique index codeIndex
+    -> on products(productCode);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create index compositeIndex
+    -> on products(productName,productPrice);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> explain select * from compositeIndex;
+ERROR 1146 (42S02): Table 'demo.compositeindex' doesn't exist
+mysql> explain select productName,productPrice from products;
++----+-------------+----------+------------+-------+---------------+----------------+---------+------+------+----------+-------------+
+| id | select_type | table    | partitions | type  | possible_keys | key            | key_len | ref  | rows | filtered | Extra       |
++----+-------------+----------+------------+-------+---------------+----------------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | products | NULL       | index | NULL          | compositeIndex | 208     | NULL |    3 |   100.00 | Using index |
++----+-------------+----------+------------+-------+---------------+----------------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> explain select productCode from products;
++----+-------------+----------+------------+-------+---------------+-----------+---------+------+------+----------+-------------+
+| id | select_type | table    | partitions | type  | possible_keys | key       | key_len | ref  | rows | filtered | Extra       |
++----+-------------+----------+------------+-------+---------------+-----------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | products | NULL       | index | NULL          | codeIndex | 5       | NULL |    3 |   100.00 | Using index |
++----+-------------+----------+------------+-------+---------------+-----------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> create view product_View as select productCode,productName,productPrice,productStatus from products;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from product_View;
++-------------+-------------+--------------+-------------------------+
+| productCode | productName | productPrice | productStatus           |
++-------------+-------------+--------------+-------------------------+
+|        1001 | TV          |     10000000 | Da Ban                  |
+|        1002 | Tu Lanh     |      5000000 | Da Thanh toan xong      |
+|        1003 | May Giat    |     10000000 | Da giao hang thanh cong |
++-------------+-------------+--------------+-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> create or replace product_View as select productCode,productName,productPrice,productStatus from products where  productCode =1001 or productName ='Tu Lanh';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'product_View as select productCode,productName,productPrice,productStatus from p' at line 1
+mysql> create or replace product_View as select productCode,productName,productPrice,productStatus from products where  productCode =1001 or productName ='Tu Lanh';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'product_View as select productCode,productName,productPrice,productStatus from p' at line 1
+mysql> create or replace view product_View as select productCode,productName,productPrice,productStatus from products where  productCode =1001 or productName ='Tu Lanh';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from product_View;
++-------------+-------------+--------------+--------------------+
+| productCode | productName | productPrice | productStatus      |
++-------------+-------------+--------------+--------------------+
+|        1001 | TV          |     10000000 | Da Ban             |
+|        1002 | Tu Lanh     |      5000000 | Da Thanh toan xong |
++-------------+-------------+--------------+--------------------+
+2 rows in set (0.00 sec)
+
+mysql> drop view product_View;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create procedure allProduct()
+    -> begin
+    -> select * from products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql> delimiter /
+mysql> create procedure allProduct()
+    -> begin
+    -> select * from products;
+    -> end /
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call allProduct;
+    -> /
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+| id | productCode | productName | productPrice | productAmount | productDescription | productStatus           |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+|  1 |        1001 | TV          |     10000000 |        300000 | Tra gop            | Da Ban                  |
+|  2 |        1002 | Tu Lanh     |      5000000 |       3000000 | Tra gop            | Da Thanh toan xong      |
+|  3 |        1003 | May Giat    |     10000000 |      10000000 | Thanh toan het     | Da giao hang thanh cong |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+3 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> delimiter /
+mysql> //
+ERROR:
+No query specified
+
+ERROR:
+No query specified
+
+mysql> describe products;
+    -> /delimiter ;
++--------------------+--------------+------+-----+---------+----------------+
+| Field              | Type         | Null | Key | Default | Extra          |
++--------------------+--------------+------+-----+---------+----------------+
+| id                 | int          | NO   | PRI | NULL    | auto_increment |
+| productCode        | int          | YES  | UNI | NULL    |                |
+| productName        | varchar(50)  | YES  | MUL | NULL    |                |
+| productPrice       | int          | YES  |     | NULL    |                |
+| productAmount      | int          | YES  |     | NULL    |                |
+| productDescription | varchar(255) | YES  |     | NULL    |                |
+| productStatus      | varchar(50)  | YES  |     | NULL    |                |
++--------------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+    -> delimiter ;
+    -> /
+mysql> delimiter // ;
+mysql> select * from products;
+    -> //
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+| id | productCode | productName | productPrice | productAmount | productDescription | productStatus           |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+|  1 |        1001 | TV          |     10000000 |        300000 | Tra gop            | Da Ban                  |
+|  2 |        1002 | Tu Lanh     |      5000000 |       3000000 | Tra gop            | Da Thanh toan xong      |
+|  3 |        1003 | May Giat    |     10000000 |      10000000 | Thanh toan het     | Da giao hang thanh cong |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> DELIMITER ;
+mysql> select * from products;
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+| id | productCode | productName | productPrice | productAmount | productDescription | productStatus           |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+|  1 |        1001 | TV          |     10000000 |        300000 | Tra gop            | Da Ban                  |
+|  2 |        1002 | Tu Lanh     |      5000000 |       3000000 | Tra gop            | Da Thanh toan xong      |
+|  3 |        1003 | May Giat    |     10000000 |      10000000 | Thanh toan het     | Da giao hang thanh cong |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+3 rows in set (0.00 sec)
+
+mysql> describe products;
++--------------------+--------------+------+-----+---------+----------------+
+| Field              | Type         | Null | Key | Default | Extra          |
++--------------------+--------------+------+-----+---------+----------------+
+| id                 | int          | NO   | PRI | NULL    | auto_increment |
+| productCode        | int          | YES  | UNI | NULL    |                |
+| productName        | varchar(50)  | YES  | MUL | NULL    |                |
+| productPrice       | int          | YES  |     | NULL    |                |
+| productAmount      | int          | YES  |     | NULL    |                |
+| productDescription | varchar(255) | YES  |     | NULL    |                |
+| productStatus      | varchar(50)  | YES  |     | NULL    |                |
++--------------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> create procedure add_Product(id1 int(11),productCode1 int(11),productName varchar(50),productPrice int(11),productAmount int(11),productDescription varchar(255),productStatus varchar(50))
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> delimiter /
+mysql> create procedure add_Product(id1 int(11),productCode1 int(11),productName varchar(50),productPrice int(11),productAmount int(11),productDescription varchar(255),productStatus varchar(50))
+    -> begin
+    -> insert into products(id,productCode,productName,productPrice,productAmount,productDescription,productStatus) values
+    -> (id1,productCode1,productName,productPrice,productAmount,roductDescription,productStatus);
+    -> end /
+Query OK, 0 rows affected, 4 warnings (0.01 sec)
+
+mysql> call ad_Product(6,1005,'Test',20000,300,'Test','Done');
+    -> /
+ERROR 1305 (42000): PROCEDURE demo.ad_Product does not exist
+mysql> call add_Product(6,1005,'Test',20000,300,'Test','Done');
+    -> /
+ERROR 1054 (42S22): Unknown column 'roductDescription' in 'field list'
+mysql>  delimiter /
+mysql>  create procedure add_Product(id1 int(11),productCode1 int(11),productName varchar(50),productPrice int(11),productAmount int(11),productDescription varchar(255),productStatus varchar(50))
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+ERROR:
+No query specified
+
+mysql> delimiter /
+mysql>  create procedure add_Products(id1 int(11),productCode1 int(11),productName varchar(50),productPrice int(11),productAmount int(11),productDescription varchar(255),productStatus varchar(50))
+    -> begin
+    ->  insert into products(id,productCode,productName,productPrice,productAmount,productDescription,productStatus) values
+    -> (id1,productCode1,productName,productPrice,productAmount,productDescription,productStatus);
+    -> end /
+Query OK, 0 rows affected, 4 warnings (0.01 sec)
+
+mysql> call add_Products(6,1005,'Test',20000,300,'Test','Done');
+    -> /
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select add_Products;
+    -> /
+ERROR 1054 (42S22): Unknown column 'add_Products' in 'field list'
+mysql> DELIMITER ;
+mysql> select * products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'products' at line 1
+mysql> select * from products;
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+| id | productCode | productName | productPrice | productAmount | productDescription | productStatus           |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+|  1 |        1001 | TV          |     10000000 |        300000 | Tra gop            | Da Ban                  |
+|  2 |        1002 | Tu Lanh     |      5000000 |       3000000 | Tra gop            | Da Thanh toan xong      |
+|  3 |        1003 | May Giat    |     10000000 |      10000000 | Thanh toan het     | Da giao hang thanh cong |
+|  6 |        1005 | Test        |        20000 |           300 | Test               | Done                    |
++----+-------------+-------------+--------------+---------------+--------------------+-------------------------+
+4 rows in set (0.00 sec)
+
+mysql>
